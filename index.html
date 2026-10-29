@@ -237,7 +237,7 @@
             });
 
             audio.play().then(() => {
-                playPauseBtn.innerText = "PAUSA";
+                playPauseBtn.innerText = "PAUSAR";
             }).catch(err => {
                 console.log("Autoplay retenido por el navegador. Pulsa PLAY.", err);
                 playPauseBtn.innerText = "PLAY";
@@ -252,7 +252,7 @@
         playPauseBtn.addEventListener('click', () => {
             if (audio.paused) {
                 audio.play().then(() => {
-                    playPauseBtn.innerText = "PAUSA";
+                    playPauseBtn.innerText = "PAUSAR";
                 }).catch(err => console.log(err));
             } else {
                 audio.pause();
@@ -262,7 +262,7 @@
 
         nextBtn.addEventListener('click', () => {
             let next = currentIndex + 1;
-            if (next >= playlist.length) next = 0; // Vuelve a la primera al llegar al final
+            if (next >= playlist.length) next = 0;
             cargarYReproducir(next);
         });
 
@@ -294,11 +294,10 @@
             }
         });
 
-        // Al terminar una canción, pasa automáticamente a la siguiente en bucle infinito
         audio.addEventListener('ended', () => {
             let next = currentIndex + 1;
             if (next >= playlist.length) {
-                next = 0; // Bucle continuo: vuelve a la pista 1
+                next = 0;
             }
             cargarYReproducir(next);
         });
