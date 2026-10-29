@@ -176,7 +176,7 @@
 </head>
 <body>
 
-    <audio id="audioPlayer" src="./musica1.mp3" autoplay></audio>
+    <audio id="audioPlayer"></audio>
 
     <div class="player-card">
         <div class="player-header">// NEON AUDIO SYSTEM //</div>
@@ -192,7 +192,7 @@
 
         <div class="controls">
             <button class="btn" id="prevBtn">&lt;&lt; ANT</button>
-            <button class="btn" id="playPauseBtn">PAUSA</button>
+            <button class="btn" id="playPauseBtn">PLAY</button>
             <button class="btn" id="nextBtn">SIG &gt;&gt;</button>
         </div>
 
@@ -223,16 +223,6 @@
 
         let currentIndex = 0;
 
-        // Intentar reproducción automática al cargar la página
-        window.addEventListener('DOMContentLoaded', () => {
-            audio.play().then(() => {
-                playPauseBtn.innerText = "PAUSA";
-            }).catch(error => {
-                console.log("Autoplay bloqueado por el navegador. Haz clic en play.");
-                playPauseBtn.innerText = "PLAY";
-            });
-        });
-
         function cargarYReproducir(index) {
             currentIndex = index;
             audio.src = playlist[currentIndex].src;
@@ -249,10 +239,15 @@
             audio.play().then(() => {
                 playPauseBtn.innerText = "PAUSA";
             }).catch(err => {
-                console.log("Error al reproducir:", err);
+                console.log("Autoplay retenido por el navegador. Pulsa PLAY.", err);
                 playPauseBtn.innerText = "PLAY";
             });
         }
+
+        // Lanzar reproducción automática al cargar la página
+        window.addEventListener('DOMContentLoaded', () => {
+            cargarYReproducir(0);
+        });
 
         playPauseBtn.addEventListener('click', () => {
             if (audio.paused) {
@@ -267,7 +262,7 @@
 
         nextBtn.addEventListener('click', () => {
             let next = currentIndex + 1;
-            if (next >= playlist.length) next = 0;
+            if (next >= playlist.length) next = 0; // Vuelve a la primera al llegar al final
             cargarYReproducir(next);
         });
 
@@ -299,9 +294,12 @@
             }
         });
 
+        // Al terminar una canción, pasa automáticamente a la siguiente en bucle infinito
         audio.addEventListener('ended', () => {
             let next = currentIndex + 1;
-            if (next >= playlist.length) next = 0;
+            if (next >= playlist.length) {
+                next = 0; // Bucle continuo: vuelve a la pista 1
+            }
             cargarYReproducir(next);
         });
     </script>
