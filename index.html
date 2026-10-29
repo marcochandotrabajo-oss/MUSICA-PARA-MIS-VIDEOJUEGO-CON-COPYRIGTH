@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neon Changing Audio - Mark OC Music</title>
+    <title>Neon Audio Player - Mark OC Music</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         @keyframes neonRainbow {
@@ -51,7 +51,6 @@
             text-align: center;
             z-index: 999;
             position: relative;
-            transition: border-color 1s ease, box-shadow 1s ease;
         }
 
         .player-header {
@@ -63,7 +62,6 @@
             margin-bottom: 24px;
             text-shadow: 0 0 10px var(--neon-color);
             text-transform: uppercase;
-            transition: color 1s ease, text-shadow 1s ease;
         }
 
         .screen {
@@ -74,7 +72,6 @@
             margin-bottom: 25px;
             box-shadow: inset 0 0 15px var(--neon-sec), 
                         0 0 10px var(--neon-sec);
-            transition: border-color 1s ease, box-shadow 1s ease;
         }
 
         .track-title {
@@ -85,7 +82,6 @@
             text-shadow: 0 0 10px var(--neon-color), 0 0 20px var(--neon-color);
             margin-bottom: 8px;
             letter-spacing: 1px;
-            transition: text-shadow 1s ease;
         }
 
         .artist-name {
@@ -94,7 +90,6 @@
             text-shadow: 0 0 8px var(--neon-sec);
             letter-spacing: 2px;
             text-transform: uppercase;
-            transition: color 1s ease, text-shadow 1s ease;
         }
 
         .progress-container {
@@ -107,7 +102,6 @@
             position: relative;
             overflow: hidden;
             border: 1px solid var(--neon-sec);
-            transition: border-color 1s ease;
         }
 
         .progress-bar {
@@ -115,7 +109,6 @@
             background: linear-gradient(90deg, var(--neon-sec), var(--neon-color));
             width: 0%;
             box-shadow: 0 0 12px var(--neon-color);
-            transition: width 0.1s linear;
         }
 
         .controls {
@@ -136,7 +129,7 @@
             cursor: pointer;
             border-radius: 8px;
             box-shadow: 0 0 10px var(--neon-color);
-            transition: all 0.3s ease-in-out;
+            transition: all 0.2s ease-in-out;
             flex: 1;
             text-shadow: 0 0 5px var(--neon-color);
         }
@@ -145,11 +138,6 @@
             background: var(--neon-color);
             color: #030308;
             box-shadow: 0 0 25px var(--neon-color);
-            transform: translateY(-2px);
-        }
-
-        .btn:active {
-            transform: translateY(1px);
         }
 
         .playlist {
@@ -168,7 +156,6 @@
             font-size: 1.3rem;
             border-radius: 6px;
             cursor: pointer;
-            transition: all 0.2s;
             letter-spacing: 1px;
         }
 
@@ -189,10 +176,10 @@
 </head>
 <body>
 
-    <audio id="audioPlayer"></audio>
+    <audio id="audioPlayer" src="./musica1.mp3"></audio>
 
     <div class="player-card">
-        <div class="player-header">// DYNAMIC_NEON_AUDIO //</div>
+        <div class="player-header">// NEON AUDIO SYSTEM //</div>
 
         <div class="screen">
             <div class="track-title" id="trackTitle">MÚSICA 1</div>
@@ -204,16 +191,16 @@
         </div>
 
         <div class="controls">
-            <button class="btn" onclick="cambiarPista(-1)">&lt;&lt; ANT</button>
-            <button class="btn" id="playPauseBtn" onclick="playPause()">PLAY</button>
-            <button class="btn" onclick="cambiarPista(1)">SIG &gt;&gt;</button>
+            <button class="btn" id="prevBtn">&lt;&lt; ANT</button>
+            <button class="btn" id="playPauseBtn">PLAY</button>
+            <button class="btn" id="nextBtn">SIG &gt;&gt;</button>
         </div>
 
         <div class="playlist">
-            <button class="playlist-btn active" onclick="seleccionarPista(0)">01. MÚSICA 1</button>
-            <button class="playlist-btn" onclick="seleccionarPista(1)">02. MÚSICA 2</button>
-            <button class="playlist-btn" onclick="seleccionarPista(2)">03. MÚSICA 3</button>
-            <button class="playlist-btn" onclick="seleccionarPista(3)">04. MÚSICA 4</button>
+            <button class="playlist-btn active" data-index="0">01. MÚSICA 1</button>
+            <button class="playlist-btn" data-index="1">02. MÚSICA 2</button>
+            <button class="playlist-btn" data-index="2">03. MÚSICA 3</button>
+            <button class="playlist-btn" data-index="3">04. MÚSICA 4</button>
         </div>
     </div>
 
@@ -221,6 +208,8 @@
         const audio = document.getElementById('audioPlayer');
         const trackTitle = document.getElementById('trackTitle');
         const playPauseBtn = document.getElementById('playPauseBtn');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
         const progressBar = document.getElementById('progressBar');
         const progressContainer = document.getElementById('progressContainer');
         const playlistBtns = document.querySelectorAll('.playlist-btn');
@@ -233,17 +222,13 @@
         ];
 
         let currentIndex = 0;
-        let isPlaying = false;
 
-        // Inicializar la primera fuente de audio sin forzar play inmediato para evitar bloqueos del navegador
-        audio.src = playlist[0].src;
-        trackTitle.innerText = playlist[0].name;
-
-        function cargarPista(index) {
+        function cargarYReproducir(index) {
             currentIndex = index;
             audio.src = playlist[currentIndex].src;
             trackTitle.innerText = playlist[currentIndex].name;
 
+            // Actualizar botones activos de la lista
             playlistBtns.forEach((btn, idx) => {
                 if (idx === currentIndex) {
                     btn.classList.add('active');
@@ -253,57 +238,69 @@
             });
 
             audio.play().then(() => {
-                isPlaying = true;
                 playPauseBtn.innerText = "PAUSA";
-            }).catch(error => {
-                console.log("Reproducción pausada por restricciones del navegador. Pulsa PLAY.");
-                isPlaying = false;
+            }).catch(err => {
+                console.log("Reproducción bloqueada o error al cargar pista:", err);
                 playPauseBtn.innerText = "PLAY";
             });
         }
 
-        function playPause() {
+        // Evento Botón Play / Pause
+        playPauseBtn.addEventListener('click', () => {
             if (audio.paused) {
                 audio.play().then(() => {
-                    isPlaying = true;
                     playPauseBtn.innerText = "PAUSA";
-                }).catch(e => console.log(e));
+                }).catch(err => console.log(err));
             } else {
                 audio.pause();
-                isPlaying = false;
                 playPauseBtn.innerText = "PLAY";
             }
-        }
+        });
 
-        function cambiarPista(direccion) {
-            currentIndex += direccion;
-            if (currentIndex < 0) currentIndex = playlist.length - 1;
-            if (currentIndex >= playlist.length) currentIndex = 0;
-            cargarPista(currentIndex);
-        }
+        // Evento Botón Siguiente
+        nextBtn.addEventListener('click', () => {
+            let next = currentIndex + 1;
+            if (next >= playlist.length) next = 0;
+            cargarYReproducir(next);
+        });
 
-        function seleccionarPista(index) {
-            cargarPista(index);
-        }
+        // Evento Botón Anterior
+        prevBtn.addEventListener('click', () => {
+            let prev = currentIndex - 1;
+            if (prev < 0) prev = playlist.length - 1;
+            cargarYReproducir(prev);
+        });
 
+        // Eventos para los botones de la playlist
+        playlistBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                let idx = parseInt(btn.getAttribute('data-index'));
+                cargarYReproducir(idx);
+            });
+        });
+
+        // Actualizar barra de progreso
         audio.addEventListener('timeupdate', () => {
             if (audio.duration) {
-                const percent = (audio.currentTime / audio.duration) * 100;
+                let percent = (audio.currentTime / audio.duration) * 100;
                 progressBar.style.width = percent + '%';
             }
         });
 
+        // Permitir saltar en la barra de tiempo
         progressContainer.addEventListener('click', (e) => {
-            const width = progressContainer.clientWidth;
-            const clickX = e.offsetX;
-            const duration = audio.duration;
-            if (duration) {
-                audio.currentTime = (clickX / width) * duration;
+            let width = progressContainer.clientWidth;
+            let clickX = e.offsetX;
+            if (audio.duration) {
+                audio.currentTime = (clickX / width) * audio.duration;
             }
         });
 
+        // Al terminar una canción, pasa a la siguiente automáticamente
         audio.addEventListener('ended', () => {
-            cambiarPista(1);
+            let next = currentIndex + 1;
+            if (next >= playlist.length) next = 0;
+            cargarYReproducir(next);
         });
     </script>
 </body>
