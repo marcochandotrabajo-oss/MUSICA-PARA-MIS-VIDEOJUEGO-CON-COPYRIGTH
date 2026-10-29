@@ -1,4 +1,4 @@
-# 🎵 Mi Espacio Musical (Con Copyright Propio)
+# 🎵 Mi Espacio Musical (Con Copyright)
 
 ¡Bienvenido a mi repositorio oficial de música para videojuegos! Aquí encontrarás todas mis pistas originales disponibles para su uso.
 
