@@ -3,63 +3,256 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reproductor de Videojuegos</title>
+    <title>Reproductor Musical</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background-color: #ffc0cb; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .player-card { background-color: #121212; width: 420px; padding: 24px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); color: #ffffff; }
-        .top-section { display: flex; align-items: center; gap: 20px; margin-bottom: 24px; }
-        .album-art { width: 90px; height: 90px; background-color: #ff1e56; border-radius: 16px; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 12px rgba(255, 30, 86, 0.4); flex-shrink: 0; }
-        .album-art svg { width: 48px; height: 48px; fill: #ffffff; }
-        .track-info { flex-grow: 1; }
-        .artist-name { font-size: 0.9rem; color: #a0a0a0; margin-bottom: 4px; }
-        .song-title { font-size: 1.4rem; font-weight: 700; color: #ffffff; }
-        .progress-container { margin-bottom: 16px; }
-        .progress-bar { appearance: none; width: 100%; height: 6px; border-radius: 3px; background: #333333; outline: none; cursor: pointer; }
-        .progress-bar::-webkit-slider-thumb { appearance: none; width: 12px; height: 12px; border-radius: 50%; background: #ff1e56; cursor: pointer; }
-        .time-info { display: flex; justify-content: space-between; font-size: 0.75rem; color: #a0a0a0; margin-top: 6px; }
-        .controls { display: flex; justify-content: center; align-items: center; gap: 30px; margin: 24px 0; }
-        .ctrl-btn { background: none; border: none; cursor: pointer; fill: #ffffff; display: flex; align-items: center; justify-content: center; }
-        .ctrl-btn svg { width: 32px; height: 32px; }
-        .volume-section { display: flex; align-items: center; gap: 12px; margin-top: 10px; }
-        .volume-section svg { width: 20px; height: 20px; fill: #a0a0a0; }
-        .volume-bar { appearance: none; width: 100%; height: 5px; border-radius: 3px; background: #333333; outline: none; cursor: pointer; }
-        .volume-bar::-webkit-slider-thumb { appearance: none; width: 12px; height: 12px; border-radius: 50%; background: #ff1e56; cursor: pointer; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #ffc0cb; /* Fondo rosa exacto */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .player-card {
+            background-color: #0e0e0e; /* Fondo negro profundo de la tarjeta */
+            width: 440px;
+            padding: 28px;
+            border-radius: 26px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            color: #ffffff;
+            position: relative;
+        }
+
+        .top-section {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            margin-bottom: 28px;
+            position: relative;
+        }
+
+        .album-art {
+            width: 96px;
+            height: 96px;
+            background-color: #ff1e56; /* Fucsia intenso idéntico */
+            border-radius: 18px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .album-art svg {
+            width: 52px;
+            height: 52px;
+            fill: #ffffff;
+        }
+
+        .track-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .artist-name {
+            font-size: 0.95rem;
+            color: #8c8c8c;
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+
+        .song-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+        }
+
+        /* Icono superior derecho (AirPlay) */
+        .airplay-icon {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            fill: #ffffff;
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+        }
+
+        /* Barra de Progreso Principal */
+        .progress-container {
+            margin-bottom: 6px;
+        }
+
+        .progress-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #333333;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .progress-slider::-webkit-slider-runnable-track {
+            height: 6px;
+            border-radius: 3px;
+            background: linear-gradient(to right, #ff1e56 var(--progress, 0%), #333333 var(--progress, 0%));
+        }
+
+        .progress-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
+            background: #ff1e56;
+            cursor: pointer;
+            margin-top: -3.5px;
+            box-shadow: 0 0 6px rgba(255, 30, 86, 0.7);
+        }
+
+        .time-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: #8c8c8c;
+            margin-top: 6px;
+            font-weight: 500;
+        }
+
+        /* Controles de Reproducción (3 Botones exactos a la imagen) */
+        .controls {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin: 20px 24px 24px 24px;
+        }
+
+        .ctrl-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            fill: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.1s ease;
+        }
+
+        .ctrl-btn:active {
+            transform: scale(0.9);
+        }
+
+        .ctrl-btn svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .play-pause-btn svg {
+            width: 28px;
+            height: 28px;
+        }
+
+        /* Control de Volumen */
+        .volume-section {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 0 2px;
+        }
+
+        .volume-section svg {
+            width: 20px;
+            height: 20px;
+            fill: #8c8c8c;
+        }
+
+        .volume-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 5px;
+            border-radius: 3px;
+            background: #333333;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .volume-slider::-webkit-slider-runnable-track {
+            height: 5px;
+            border-radius: 3px;
+            background: linear-gradient(to right, #ff1e56 var(--volume, 100%), #333333 var(--volume, 100%));
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
+            background: #ff1e56;
+            cursor: pointer;
+            margin-top: -4px;
+        }
     </style>
 </head>
 <body>
 
     <div class="player-card">
+        <!-- Elemento de audio conectado a tu pista -->
         <audio id="audioElement" src="./musica1.mp3"></audio>
 
         <div class="top-section">
             <div class="album-art">
+                <!-- Icono de nota musical idéntico -->
                 <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
             </div>
             <div class="track-info">
-                <div class="artist-name">Mark OC Music</div>
-                <div class="song-title">Música 1</div>
+                <div class="artist-name">Singer Name</div>
+                <div class="song-title">New Song</div>
             </div>
+            <!-- Icono AirPlay superior derecho idéntico al de la referencia -->
+            <svg class="airplay-icon" viewBox="0 0 24 24"><path d="M6 22h12a2 2 0 0 0 2-2V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2zm7-17.5L18.5 10H13V4.5zM6 20V4h6v7h7v9H6z"/></svg>
         </div>
 
+        <!-- Barra de Progreso y Tiempos -->
         <div class="progress-container">
-            <input type="range" id="progressBar" class="progress-bar" value="0" min="0" max="100" step="0.1">
+            <input type="range" id="progressBar" class="progress-slider" value="0" min="0" max="100" step="0.1">
             <div class="time-info">
-                <span id="currentTime">00:00</span>
-                <span id="durationTime">00:00</span>
+                <span id="currentTime">01:28</span>
+                <span id="durationTime">04:32</span>
             </div>
         </div>
 
+        <!-- 3 Botones de Control (Bucle izquierdo, Play/Pause de dos barras, Bucle derecho) -->
         <div class="controls">
-            <button class="ctrl-btn" id="playPauseBtn" title="Reproducir / Pausar">
-                <svg id="playIcon" viewBox="0 0 24 24" style="display: block;"><path d="M8 5v14l11-7z"/></svg>
-                <svg id="pauseIcon" viewBox="0 0 24 24" style="display: none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+            <!-- Botón de bucle izquierdo con flecha curva -->
+            <button class="ctrl-btn" id="loopLeftBtn" title="Repetir">
+                <svg viewBox="0 0 24 24"><path d="M12 5V2L8 6l4 4V7c2.76 0 5 2.24 5 5 0 .64-.13 1.25-.37 1.81l1.6 1.6C18.84 14.71 19.5 13.41 19.5 12c0-4.14-3.36-7.5-7.5-7.5zM6 12c0-.64.13-1.25.37-1.81L4.77 8.59C4.16 9.29 3.75 10.1 3.5 11h2.5c.08-.34.2-.67.37-1zM12 17c-2.76 0-5-2.24-5-5 0-.54.09-1.06.26-1.55L5.7 8.97C5.24 9.9 5 10.92 5 12c0 3.87 3.13 7 7 7v3l4-4-4-4v3z"/></svg>
+            </button>
+
+            <!-- Botón Play / Pause central (Dos barras verticales exactas a la imagen) -->
+            <button class="ctrl-btn play-pause-btn" id="playPauseBtn" title="Reproducir / Pausar">
+                <svg id="playIcon" viewBox="0 0 24 24" style="display: none;"><path d="M8 5v14l11-7z"/></svg>
+                <svg id="pauseIcon" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+            </button>
+
+            <!-- Botón de bucle derecho con flecha curva -->
+            <button class="ctrl-btn" id="loopRightBtn" title="Bucle">
+                <svg viewBox="0 0 24 24"><path d="M12 4.5c4.14 0 7.5 3.36 7.5 7.5 0 .64-.13 1.25-.37 1.81l1.6 1.6c.64-1.1 1.02-2.39 1.02-3.71 0-5.52-4.48-10-10-10V1L7 5l5 4V4.5zM6 12c0-.64.13-1.25.37-1.81L4.77 8.59C4.16 9.29 3.75 10.1 3.5 11h2.5c.08-.34.2-.67.37-1zM12 19.5c-4.14 0-7.5-3.36-7.5-7.5 0-.54.09-1.06.26-1.55L3.26 8.97C2.76 9.9 2.5 10.92 2.5 12c0 5.52 4.48 10 10 10v3.5L17.5 21 12 17v2.5z"/></svg>
             </button>
         </div>
 
+        <!-- Control de Volumen con iconos idénticos -->
         <div class="volume-section">
-            <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
-            <input type="range" id="volumeBar" class="volume-bar" min="0" max="1" step="0.05" value="1">
+            <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3z"/></svg>
+            <input type="range" id="volumeBar" class="volume-slider" min="0" max="1" step="0.01" value="1">
+            <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
         </div>
     </div>
 
@@ -79,6 +272,7 @@
             return `${minutes < 10 ? '0' : ''}${minutes}:${secs < 10 ? '0' : ''}${secs}`;
         }
 
+        // Control Play / Pause dinámico
         playPauseBtn.addEventListener('click', () => {
             if (audio.paused) {
                 audio.play();
@@ -91,9 +285,12 @@
             }
         });
 
+        // Actualizar barra de progreso y colores dinámicos
         audio.addEventListener('timeupdate', () => {
             if (!isNaN(audio.duration)) {
-                progressBar.value = (audio.currentTime / audio.duration) * 100;
+                const percent = (audio.currentTime / audio.duration) * 100;
+                progressBar.value = percent;
+                progressBar.style.setProperty('--progress', percent + '%');
                 currentTimeEl.textContent = formatTime(audio.currentTime);
             }
         });
@@ -102,362 +299,20 @@
             durationTimeEl.textContent = formatTime(audio.duration);
         });
 
+        // Permitir saltar en el audio mediante la barra
         progressBar.addEventListener('input', () => {
             if (!isNaN(audio.duration)) {
-                audio.currentTime = (progressBar.value / 100) * audio.duration;
+                const seekTime = (progressBar.value / 100) * audio.duration;
+                audio.currentTime = seekTime;
+                progressBar.style.setProperty('--progress', progressBar.value + '%');
             }
         });
 
+        // Control de volumen dinámico
         volumeBar.addEventListener('input', () => {
             audio.volume = volumeBar.value;
-        });
-    </script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reproductor de Videojuegos</title>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background-color: #ffc0cb; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .player-card { background-color: #121212; width: 420px; padding: 24px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); color: #ffffff; }
-        .top-section { display: flex; align-items: center; gap: 20px; margin-bottom: 24px; }
-        .album-art { width: 90px; height: 90px; background-color: #ff1e56; border-radius: 16px; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 12px rgba(255, 30, 86, 0.4); flex-shrink: 0; }
-        .album-art svg { width: 48px; height: 48px; fill: #ffffff; }
-        .track-info { flex-grow: 1; }
-        .artist-name { font-size: 0.9rem; color: #a0a0a0; margin-bottom: 4px; }
-        .song-title { font-size: 1.4rem; font-weight: 700; color: #ffffff; }
-        .progress-container { margin-bottom: 16px; }
-        .progress-bar { appearance: none; width: 100%; height: 6px; border-radius: 3px; background: #333333; outline: none; cursor: pointer; }
-        .progress-bar::-webkit-slider-thumb { appearance: none; width: 12px; height: 12px; border-radius: 50%; background: #ff1e56; cursor: pointer; }
-        .time-info { display: flex; justify-content: space-between; font-size: 0.75rem; color: #a0a0a0; margin-top: 6px; }
-        .controls { display: flex; justify-content: center; align-items: center; gap: 30px; margin: 24px 0; }
-        .ctrl-btn { background: none; border: none; cursor: pointer; fill: #ffffff; display: flex; align-items: center; justify-content: center; }
-        .ctrl-btn svg { width: 32px; height: 32px; }
-        .volume-section { display: flex; align-items: center; gap: 12px; margin-top: 10px; }
-        .volume-section svg { width: 20px; height: 20px; fill: #a0a0a0; }
-        .volume-bar { appearance: none; width: 100%; height: 5px; border-radius: 3px; background: #333333; outline: none; cursor: pointer; }
-        .volume-bar::-webkit-slider-thumb { appearance: none; width: 12px; height: 12px; border-radius: 50%; background: #ff1e56; cursor: pointer; }
-    </style>
-</head>
-<body>
-
-    <div class="player-card">
-        <audio id="audioElement" src="./musica1.mp3"></audio>
-
-        <div class="top-section">
-            <div class="album-art">
-                <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
-            </div>
-            <div class="track-info">
-                <div class="artist-name">Mark OC Music</div>
-                <div class="song-title">Música 1</div>
-            </div>
-        </div>
-
-        <div class="progress-container">
-            <input type="range" id="progressBar" class="progress-bar" value="0" min="0" max="100" step="0.1">
-            <div class="time-info">
-                <span id="currentTime">00:00</span>
-                <span id="durationTime">00:00</span>
-            </div>
-        </div>
-
-        <div class="controls">
-            <button class="ctrl-btn" id="playPauseBtn" title="Reproducir / Pausar">
-                <svg id="playIcon" viewBox="0 0 24 24" style="display: block;"><path d="M8 5v14l11-7z"/></svg>
-                <svg id="pauseIcon" viewBox="0 0 24 24" style="display: none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-            </button>
-        </div>
-
-        <div class="volume-section">
-            <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
-            <input type="range" id="volumeBar" class="volume-bar" min="0" max="1" step="0.05" value="1">
-        </div>
-    </div>
-
-    <script>
-        const audio = document.getElementById('audioElement');
-        const playPauseBtn = document.getElementById('playPauseBtn');
-        const playIcon = document.getElementById('playIcon');
-        const pauseIcon = document.getElementById('pauseIcon');
-        const progressBar = document.getElementById('progressBar');
-        const currentTimeEl = document.getElementById('currentTime');
-        const durationTimeEl = document.getElementById('durationTime');
-        const volumeBar = document.getElementById('volumeBar');
-
-        function formatTime(seconds) {
-            const minutes = Math.floor(seconds / 60);
-            const secs = Math.floor(seconds % 60);
-            return `${minutes < 10 ? '0' : ''}${minutes}:${secs < 10 ? '0' : ''}${secs}`;
-        }
-
-        playPauseBtn.addEventListener('click', () => {
-            if (audio.paused) {
-                audio.play();
-                playIcon.style.display = 'none';
-                pauseIcon.style.display = 'block';
-            } else {
-                audio.pause();
-                playIcon.style.display = 'block';
-                pauseIcon.style.display = 'none';
-            }
-        });
-
-        audio.addEventListener('timeupdate', () => {
-            if (!isNaN(audio.duration)) {
-                progressBar.value = (audio.currentTime / audio.duration) * 100;
-                currentTimeEl.textContent = formatTime(audio.currentTime);
-            }
-        });
-
-        audio.addEventListener('loadedmetadata', () => {
-            durationTimeEl.textContent = formatTime(audio.duration);
-        });
-
-        progressBar.addEventListener('input', () => {
-            if (!isNaN(audio.duration)) {
-                audio.currentTime = (progressBar.value / 100) * audio.duration;
-            }
-        });
-
-        volumeBar.addEventListener('input', () => {
-            audio.volume = volumeBar.value;
-        });
-    </script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reproductor de Videojuegos</title>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background-color: #ffc0cb; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .player-card { background-color: #121212; width: 420px; padding: 24px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); color: #ffffff; }
-        .top-section { display: flex; align-items: center; gap: 20px; margin-bottom: 24px; }
-        .album-art { width: 90px; height: 90px; background-color: #ff1e56; border-radius: 16px; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 12px rgba(255, 30, 86, 0.4); flex-shrink: 0; }
-        .album-art svg { width: 48px; height: 48px; fill: #ffffff; }
-        .track-info { flex-grow: 1; }
-        .artist-name { font-size: 0.9rem; color: #a0a0a0; margin-bottom: 4px; }
-        .song-title { font-size: 1.4rem; font-weight: 700; color: #ffffff; }
-        .progress-container { margin-bottom: 16px; }
-        .progress-bar { appearance: none; width: 100%; height: 6px; border-radius: 3px; background: #333333; outline: none; cursor: pointer; }
-        .progress-bar::-webkit-slider-thumb { appearance: none; width: 12px; height: 12px; border-radius: 50%; background: #ff1e56; cursor: pointer; }
-        .time-info { display: flex; justify-content: space-between; font-size: 0.75rem; color: #a0a0a0; margin-top: 6px; }
-        .controls { display: flex; justify-content: center; align-items: center; gap: 30px; margin: 24px 0; }
-        .ctrl-btn { background: none; border: none; cursor: pointer; fill: #ffffff; display: flex; align-items: center; justify-content: center; }
-        .ctrl-btn svg { width: 32px; height: 32px; }
-        .volume-section { display: flex; align-items: center; gap: 12px; margin-top: 10px; }
-        .volume-section svg { width: 20px; height: 20px; fill: #a0a0a0; }
-        .volume-bar { appearance: none; width: 100%; height: 5px; border-radius: 3px; background: #333333; outline: none; cursor: pointer; }
-        .volume-bar::-webkit-slider-thumb { appearance: none; width: 12px; height: 12px; border-radius: 50%; background: #ff1e56; cursor: pointer; }
-    </style>
-</head>
-<body>
-
-    <div class="player-card">
-        <audio id="audioElement" src="./musica1.mp3"></audio>
-
-        <div class="top-section">
-            <div class="album-art">
-                <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
-            </div>
-            <div class="track-info">
-                <div class="artist-name">Mark OC Music</div>
-                <div class="song-title">Música 1</div>
-            </div>
-        </div>
-
-        <div class="progress-container">
-            <input type="range" id="progressBar" class="progress-bar" value="0" min="0" max="100" step="0.1">
-            <div class="time-info">
-                <span id="currentTime">00:00</span>
-                <span id="durationTime">00:00</span>
-            </div>
-        </div>
-
-        <div class="controls">
-            <button class="ctrl-btn" id="playPauseBtn" title="Reproducir / Pausar">
-                <svg id="playIcon" viewBox="0 0 24 24" style="display: block;"><path d="M8 5v14l11-7z"/></svg>
-                <svg id="pauseIcon" viewBox="0 0 24 24" style="display: none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-            </button>
-        </div>
-
-        <div class="volume-section">
-            <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
-            <input type="range" id="volumeBar" class="volume-bar" min="0" max="1" step="0.05" value="1">
-        </div>
-    </div>
-
-    <script>
-        const audio = document.getElementById('audioElement');
-        const playPauseBtn = document.getElementById('playPauseBtn');
-        const playIcon = document.getElementById('playIcon');
-        const pauseIcon = document.getElementById('pauseIcon');
-        const progressBar = document.getElementById('progressBar');
-        const currentTimeEl = document.getElementById('currentTime');
-        const durationTimeEl = document.getElementById('durationTime');
-        const volumeBar = document.getElementById('volumeBar');
-
-        function formatTime(seconds) {
-            const minutes = Math.floor(seconds / 60);
-            const secs = Math.floor(seconds % 60);
-            return `${minutes < 10 ? '0' : ''}${minutes}:${secs < 10 ? '0' : ''}${secs}`;
-        }
-
-        playPauseBtn.addEventListener('click', () => {
-            if (audio.paused) {
-                audio.play();
-                playIcon.style.display = 'none';
-                pauseIcon.style.display = 'block';
-            } else {
-                audio.pause();
-                playIcon.style.display = 'block';
-                pauseIcon.style.display = 'none';
-            }
-        });
-
-        audio.addEventListener('timeupdate', () => {
-            if (!isNaN(audio.duration)) {
-                progressBar.value = (audio.currentTime / audio.duration) * 100;
-                currentTimeEl.textContent = formatTime(audio.currentTime);
-            }
-        });
-
-        audio.addEventListener('loadedmetadata', () => {
-            durationTimeEl.textContent = formatTime(audio.duration);
-        });
-
-        progressBar.addEventListener('input', () => {
-            if (!isNaN(audio.duration)) {
-                audio.currentTime = (progressBar.value / 100) * audio.duration;
-            }
-        });
-
-        volumeBar.addEventListener('input', () => {
-            audio.volume = volumeBar.value;
-        });
-    </script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reproductor de Videojuegos</title>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background-color: #ffc0cb; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .player-card { background-color: #121212; width: 420px; padding: 24px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); color: #ffffff; }
-        .top-section { display: flex; align-items: center; gap: 20px; margin-bottom: 24px; }
-        .album-art { width: 90px; height: 90px; background-color: #ff1e56; border-radius: 16px; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 12px rgba(255, 30, 86, 0.4); flex-shrink: 0; }
-        .album-art svg { width: 48px; height: 48px; fill: #ffffff; }
-        .track-info { flex-grow: 1; }
-        .artist-name { font-size: 0.9rem; color: #a0a0a0; margin-bottom: 4px; }
-        .song-title { font-size: 1.4rem; font-weight: 700; color: #ffffff; }
-        .progress-container { margin-bottom: 16px; }
-        .progress-bar { appearance: none; width: 100%; height: 6px; border-radius: 3px; background: #333333; outline: none; cursor: pointer; }
-        .progress-bar::-webkit-slider-thumb { appearance: none; width: 12px; height: 12px; border-radius: 50%; background: #ff1e56; cursor: pointer; }
-        .time-info { display: flex; justify-content: space-between; font-size: 0.75rem; color: #a0a0a0; margin-top: 6px; }
-        .controls { display: flex; justify-content: center; align-items: center; gap: 30px; margin: 24px 0; }
-        .ctrl-btn { background: none; border: none; cursor: pointer; fill: #ffffff; display: flex; align-items: center; justify-content: center; }
-        .ctrl-btn svg { width: 32px; height: 32px; }
-        .volume-section { display: flex; align-items: center; gap: 12px; margin-top: 10px; }
-        .volume-section svg { width: 20px; height: 20px; fill: #a0a0a0; }
-        .volume-bar { appearance: none; width: 100%; height: 5px; border-radius: 3px; background: #333333; outline: none; cursor: pointer; }
-        .volume-bar::-webkit-slider-thumb { appearance: none; width: 12px; height: 12px; border-radius: 50%; background: #ff1e56; cursor: pointer; }
-    </style>
-</head>
-<body>
-
-    <div class="player-card">
-        <audio id="audioElement" src="./musica1.mp3"></audio>
-
-        <div class="top-section">
-            <div class="album-art">
-                <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
-            </div>
-            <div class="track-info">
-                <div class="artist-name">Mark OC Music</div>
-                <div class="song-title">Música 1</div>
-            </div>
-        </div>
-
-        <div class="progress-container">
-            <input type="range" id="progressBar" class="progress-bar" value="0" min="0" max="100" step="0.1">
-            <div class="time-info">
-                <span id="currentTime">00:00</span>
-                <span id="durationTime">00:00</span>
-            </div>
-        </div>
-
-        <div class="controls">
-            <button class="ctrl-btn" id="playPauseBtn" title="Reproducir / Pausar">
-                <svg id="playIcon" viewBox="0 0 24 24" style="display: block;"><path d="M8 5v14l11-7z"/></svg>
-                <svg id="pauseIcon" viewBox="0 0 24 24" style="display: none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-            </button>
-        </div>
-
-        <div class="volume-section">
-            <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
-            <input type="range" id="volumeBar" class="volume-bar" min="0" max="1" step="0.05" value="1">
-        </div>
-    </div>
-
-    <script>
-        const audio = document.getElementById('audioElement');
-        const playPauseBtn = document.getElementById('playPauseBtn');
-        const playIcon = document.getElementById('playIcon');
-        const pauseIcon = document.getElementById('pauseIcon');
-        const progressBar = document.getElementById('progressBar');
-        const currentTimeEl = document.getElementById('currentTime');
-        const durationTimeEl = document.getElementById('durationTime');
-        const volumeBar = document.getElementById('volumeBar');
-
-        function formatTime(seconds) {
-            const minutes = Math.floor(seconds / 60);
-            const secs = Math.floor(seconds % 60);
-            return `${minutes < 10 ? '0' : ''}${minutes}:${secs < 10 ? '0' : ''}${secs}`;
-        }
-
-        playPauseBtn.addEventListener('click', () => {
-            if (audio.paused) {
-                audio.play();
-                playIcon.style.display = 'none';
-                pauseIcon.style.display = 'block';
-            } else {
-                audio.pause();
-                playIcon.style.display = 'block';
-                pauseIcon.style.display = 'none';
-            }
-        });
-
-        audio.addEventListener('timeupdate', () => {
-            if (!isNaN(audio.duration)) {
-                progressBar.value = (audio.currentTime / audio.duration) * 100;
-                currentTimeEl.textContent = formatTime(audio.currentTime);
-            }
-        });
-
-        audio.addEventListener('loadedmetadata', () => {
-            durationTimeEl.textContent = formatTime(audio.duration);
-        });
-
-        progressBar.addEventListener('input', () => {
-            if (!isNaN(audio.duration)) {
-                audio.currentTime = (progressBar.value / 100) * audio.duration;
-            }
-        });
-
-        volumeBar.addEventListener('input', () => {
-            audio.volume = volumeBar.value;
+            const volPercent = volumeBar.value * 100;
+            volumeBar.style.setProperty('--volume', volPercent + '%');
         });
     </script>
 </body>
