@@ -3,38 +3,375 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reproductor de Música - Videojuegos</title>
+    <title>Reproductor MP3 - Mark OC Music</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #0f172a; color: #fff; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .container { background: #1e293b; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); width: 100%; max-width: 400px; text-align: center; }
-        .track { margin-bottom: 20px; }
-        h2 { font-size: 1.2rem; margin-bottom: 8px; }
-        audio { width: 100%; }
+        /* --- ESTILOS CSS --- */
+        :root {
+            --ipod-color: #f7a828; /* Color naranja dorado del iPod Shuffle */
+            --text-color: #555;    /* Color gris oscuro de los iconos */
+            --bg-color: #e0e0e0;   /* Fondo de la página */
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        .ipod-container {
+            background-color: var(--ipod-color);
+            width: 300px; /* Ajusta el tamaño según necesites */
+            height: 350px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3), inset 0 -5px 10px rgba(0,0,0,0.1);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end; /* Alinea los elementos al fondo para dejar espacio arriba */
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+
+        /* Parte superior (Jack y Switch) */
+        .ipod-top {
+            position: absolute;
+            top: 15px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+            box-sizing: border-box;
+            color: var(--text-color);
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .jack-port {
+            width: 35px;
+            height: 35px;
+            background-color: #d18b1f;
+            border-radius: 50%;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+            position: relative;
+        }
+        .jack-port::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 15px;
+            height: 15px;
+            background-color: #333;
+            border-radius: 50%;
+        }
+
+        .shuffle-switch-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+        .shuffle-switch {
+            width: 40px;
+            height: 12px;
+            background-color: #d18b1f;
+            border-radius: 6px;
+            position: relative;
+            cursor: pointer;
+        }
+        .shuffle-knob {
+            width: 20px;
+            height: 10px;
+            background-color: #b0741a;
+            border-radius: 5px;
+            position: absolute;
+            top: 1px;
+            left: 1px;
+            transition: left 0.2s ease;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+        /* Estado activo del switch (cuando se activa el aleatorio) */
+        .shuffle-switch.active .shuffle-knob {
+            left: 19px;
+        }
+
+        /* Área de controles central (Circular) */
+        .controls-wrapper {
+            width: 220px;
+            height: 220px;
+            margin: 0 auto 30px auto; /* Centrado y con margen inferior */
+            position: relative;
+        }
+
+        .outer-circle {
+            width: 100%;
+            height: 100%;
+            background-color: #fff;
+            border-radius: 50%;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            position: relative;
+            color: var(--text-color);
+            font-size: 2rem; /* Tamaño de fuente para los iconos de texto */
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .inner-circle {
+            width: 90px;
+            height: 90px;
+            background-color: #ededed;
+            border-radius: 50%;
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .inner-circle:active {
+            background-color: #d0d0d0;
+        }
+
+        /* Icono Play/Pause (Dos barras verticales cuando está en pausa) */
+        .play-pause-icon {
+            width: 24px;
+            height: 30px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .play-pause-icon::before, .play-pause-icon::after {
+            content: '';
+            width: 10px;
+            height: 100%;
+            background-color: var(--text-color);
+        }
+        /* Cambia a icono de Play (triángulo) cuando se está reproduciendo */
+        .ipod-container.playing .play-pause-icon {
+            width: 0; height: 0;
+            border-left: 20px solid var(--text-color);
+            border-top: 15px solid transparent;
+            border-bottom: 15px solid transparent;
+            background: none;
+        }
+        .ipod-container.playing .play-pause-icon::before,
+        .ipod-container.playing .play-pause-icon::after {
+            display: none;
+        }
+
+        /* Posicionamiento de los botones del círculo */
+        .btn {
+            position: absolute;
+            cursor: pointer;
+            user-select: none;
+            padding: 15px;
+        }
+        .btn:active {
+            color: #000;
+        }
+        .btn-prev { left: 20px; top: 50%; transform: translateY(-50%); }
+        .btn-next { right: 20px; top: 50%; transform: translateY(-50%); }
+        .btn-up { top: 20px; left: 50%; transform: translateX(-50%); }
+        .btn-down { bottom: 20px; left: 50%; transform: translateX(-50%); }
+
+        /* Pantalla LCD inferior */
+        .lcd-screen {
+            background-color: #111;
+            color: #0ff; /* Color de texto cian */
+            font-family: 'VT323', monospace; /* Fuente estilo digital */
+            width: 100%;
+            height: 60px;
+            padding: 8px 20px;
+            box-sizing: border-box;
+            font-size: 1.1rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            border-top: 1px solid rgba(0,0,0,0.2);
+        }
+        .track-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .artist-name {
+            color: #0cc; /* Cian oscuro */
+            font-size: 0.9rem;
+        }
+
     </style>
+    <!-- Importar fuente estilo digital -->
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <h1>🎵 Mis Pistas</h1>
-        
-        <div class="track">
-            <h2>Música 1</h2>
-            <audio controls src="./musica1.mp3"></audio>
+
+    <!-- Contenedor principal del iPod -->
+    <div class="ipod-container" id="ipodDevice">
+
+        <!-- Parte superior -->
+        <div class="ipod-top">
+            <span>SHUFFLE</span>
+            <div class="jack-port"></div>
+            <div class="shuffle-switch-container">
+                <div class="shuffle-switch" id="shuffleBtn" onclick="toggleShuffle()">
+                    <div class="shuffle-knob"></div>
+                </div>
+                <span style="font-size: 0.6rem;">ALEATORIO</span>
+            </div>
         </div>
-        
-        <div class="track">
-            <h2>Música 2</h2>
-            <audio controls src="./musica2.mp3"></audio>
+
+        <!-- Elemento de audio HTML5 oculto -->
+        <audio id="audioPlayer"></audio>
+
+        <!-- Área de controles central -->
+        <div class="controls-wrapper">
+            <div class="outer-circle">
+                <div class="btn btn-up" onclick="ajustarVolumen(0.1)">+</div>
+                <div class="btn btn-down" onclick="ajustarVolumen(-0.1)">-</div>
+                <div class="btn btn-prev" onclick="cambiarPista(-1)">|&lt;&lt;</div>
+                <div class="btn btn-next" onclick="cambiarPista(1)">&gt;&gt;|</div>
+
+                <!-- Círculo central de Play/Pause -->
+                <div class="inner-circle" onclick="playPause()">
+                    <div class="play-pause-icon" id="playPauseIcon"></div>
+                </div>
+            </div>
         </div>
-        
-        <div class="track">
-            <h2>Música 3</h2>
-            <audio controls src="./musica3.mp3"></audio>
+
+        <!-- Pantalla LCD inferior -->
+        <div class="lcd-screen">
+            <div class="track-title" id="trackTitle">Seleccione pista</div>
+            <div class="artist-name">Mark OC Music</div>
         </div>
-        
-        <div class="track">
-            <h2>Música 4</h2>
-            <audio controls src="./musica4.mp3"></audio>
-        </div>
+
     </div>
+
+    <script>
+        /* --- CÓDIGO JAVASCRIPT --- */
+        const audio = document.getElementById('audioPlayer');
+        const ipodDevice = document.getElementById('ipodDevice');
+        const trackTitleDisplay = document.getElementById('trackTitle');
+        const shuffleBtn = document.getElementById('shuffleBtn');
+        let isPlaying = false;
+        let isShuffleOn = false;
+
+        // Playlist: Lista de canciones que deben estar en la raíz
+        const playlist = [
+            { title: "Música 1", src: "musica1.mp3" },
+            { title: "Música 2", src: "musica2.mp3" },
+            { title: "Música 3", src: "musica3.mp3" },
+            { title: "Música 4", src: "musica4.mp3" }
+        ];
+
+        let currentTrackIndex = 0;
+
+        // Función para cargar y reproducir una pista específica
+        function cargarPista(index) {
+            if (index < 0 || index >= playlist.length) return;
+
+            currentTrackIndex = index;
+            audio.src = playlist[index].src;
+            trackTitleDisplay.innerText = playlist[index].title;
+
+            // Si el modo aleatorio está activado, la etiqueta de la pantalla cambiará al reproducir
+            if (isShuffleOn) {
+                 // Muestra una notificación temporal en la pantalla
+                 let tempTitle = trackTitleDisplay.innerText;
+                 trackTitleDisplay.innerText = "> ALEATORIO <";
+                 setTimeout(() => trackTitleDisplay.innerText = tempTitle, 1500);
+            }
+
+            audio.load();
+            audio.play();
+            isPlaying = true;
+            ipodDevice.classList.add('playing'); // Cambia el icono a "Pausa"
+        }
+
+        // Lógica principal de Play/Pause
+        function playPause() {
+            if (playlist.length === 0) return;
+
+            if (!isPlaying) {
+                // Si está pausado y no hay ninguna pista cargada, carga la primera
+                if (audio.src === "" || audio.paused) {
+                    // Comprueba si el modo aleatorio está activado y elige una pista al azar
+                     if (isShuffleOn) {
+                        currentTrackIndex = Math.floor(Math.random() * playlist.length);
+                    }
+                    cargarPista(currentTrackIndex);
+                } else {
+                    // Si ya estaba cargada pero pausada, simplemente dale al play
+                     audio.play();
+                     isPlaying = true;
+                     ipodDevice.classList.add('playing');
+                }
+            } else {
+                // Si está reproduciendo, pausa
+                audio.pause();
+                isPlaying = false;
+                ipodDevice.classList.remove('playing'); // Cambia el icono a "Play"
+            }
+        }
+
+        // Lógica para cambiar de pista (Siguiente/Anterior)
+        function cambiarPista(direccion) {
+            let nextIndex;
+
+            // Si el modo aleatorio está activado, el botón de siguiente salta a una aleatoria
+            if (isShuffleOn && direccion === 1) {
+                do {
+                   nextIndex = Math.floor(Math.random() * playlist.length);
+                } while (nextIndex === currentTrackIndex);
+            } else {
+                // Comportamiento normal: secuencial
+                nextIndex = currentTrackIndex + direccion;
+            }
+
+            if (nextIndex < 0) nextIndex = playlist.length - 1;
+            if (nextIndex >= playlist.length) nextIndex = 0;
+
+            cargarPista(nextIndex);
+        }
+
+        // Función para activar/desactivar el modo aleatorio (Shuffle)
+        function toggleShuffle() {
+            isShuffleOn = !isShuffleOn;
+            if (isShuffleOn) {
+                shuffleBtn.classList.add('active');
+                // Opcional: mostrar un mensaje breve en la pantalla
+                let tempTitle = trackTitleDisplay.innerText;
+                trackTitleDisplay.innerText = "Modo: Aleatorio";
+                 setTimeout(() => trackTitleDisplay.innerText = tempTitle, 1500);
+
+            } else {
+                shuffleBtn.classList.remove('active');
+                 let tempTitle = trackTitleDisplay.innerText;
+                trackTitleDisplay.innerText = "Modo: Normal";
+                 setTimeout(() => trackTitleDisplay.innerText = tempTitle, 1500);
+            }
+        }
+
+        // Control de volumen con los botones + y -
+        function ajustarVolumen(cantidad) {
+            let nuevoVolumen = audio.volume + cantidad;
+            audio.volume = Math.max(0, Math.min(1, nuevoVolumen));
+        }
+
+        // Cuando una canción termina, reproduce la siguiente automáticamente
+        audio.addEventListener('ended', () => {
+            cambiarPista(1);
+        });
+
+    </script>
 </body>
 </html>
