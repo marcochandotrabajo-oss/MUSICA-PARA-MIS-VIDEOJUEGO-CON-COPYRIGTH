@@ -11,7 +11,7 @@
             --neon-pink: #ff007f;
             --neon-cyan: #00f3ff;
             --neon-purple: #9d00ff;
-            --bg-dark: #090514;
+            --bg-dark: #070311;
         }
 
         * {
@@ -24,9 +24,9 @@
             background-color: var(--bg-dark);
             /* Fondo de cuadrícula en perspectiva estilo Synthwave */
             background-image: 
-                linear-gradient(to right, rgba(0, 243, 255, 0.08) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(255, 0, 127, 0.08) 1px, transparent 1px);
-            background-size: 35px 35px;
+                linear-gradient(to right, rgba(0, 243, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 0, 127, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
             height: 100vh;
             display: flex;
             justify-content: center;
@@ -36,52 +36,308 @@
             position: relative;
         }
 
-        /* Efecto de líneas de escaneo (Scanlines) de televisor antiguo */
+        /* Efecto de líneas de escaneo (Scanlines) de televisor antiguo muy sutil */
         body::before {
             content: " ";
             display: block;
             position: absolute;
             top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
-            background-size: 100% 4px;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%);
+            background-size: 100% 3px;
             z-index: 20;
             pointer-events: none;
         }
 
-        /* Sol ochentero Retro Wave en el horizonte */
+        /* Sol ochentero Retro Wave con brillo mejorado */
         .retro-sun {
             position: absolute;
-            bottom: 10vh;
-            width: 280px;
-            height: 280px;
+            bottom: 5vh;
+            width: 320px;
+            height: 320px;
             background: linear-gradient(to bottom, #ffea00, #ff0055);
             border-radius: 50%;
-            box-shadow: 0 0 50px #ff0055;
+            box-shadow: 0 0 60px #ff0055, 0 0 100px rgba(255, 0, 85, 0.5);
             z-index: 1;
-            /* Rayas horizontales recortadas en el sol */
-            -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 50%);
-            mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 50%);
-            -webkit-mask-size: 100% 16px;
-            mask-size: 100% 16px;
+            -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 55%, rgba(0,0,0,0) 55%);
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 55%, rgba(0,0,0,0) 55%);
+            -webkit-mask-size: 100% 18px;
+            mask-size: 100% 18px;
         }
 
-        /* Tarjeta principal del reproductor */
+        /* Tarjeta principal del reproductor mejorada */
         .player-card {
-            background: rgba(13, 2, 33, 0.85);
-            width: 380px;
-            padding: 30px;
-            border-radius: 20px;
+            background: rgba(10, 3, 28, 0.9);
+            width: 400px;
+            padding: 32px;
+            border-radius: 24px;
             border: 2px solid var(--neon-cyan);
-            box-shadow: 0 0 25px rgba(0, 243, 255, 0.4), inset 0 0 20px rgba(255, 0, 127, 0.3);
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.25), inset 0 0 25px rgba(255, 0, 127, 0.2);
             text-align: center;
             z-index: 10;
             position: relative;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(8px);
         }
 
-        /* Cabecera del reproductor */
         .player-header {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             color: var(--neon-cyan);
-            letter-spacing: 2px;
-            margin-bottom:
+            letter-spacing: 3px;
+            margin-bottom: 22px;
+            text-shadow: 0 0 10px var(--neon-cyan);
+            text-transform: uppercase;
+        }
+
+        /* Pantalla LCD elegante */
+        .screen {
+            background: #020005;
+            border: 2px solid var(--neon-pink);
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 22px;
+            box-shadow: inset 0 0 15px rgba(255, 0, 127, 0.4);
+        }
+
+        .track-title {
+            font-size: 2.4rem;
+            color: #fff;
+            text-shadow: 0 0 12px var(--neon-pink), 0 0 25px var(--neon-pink);
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
+
+        .artist-name {
+            font-size: 1.5rem;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 8px var(--neon-cyan);
+            letter-spacing: 1px;
+        }
+
+        /* Barra de progreso interactiva */
+        .progress-container {
+            width: 100%;
+            background: #111;
+            height: 12px;
+            border-radius: 6px;
+            margin-bottom: 22px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--neon-cyan);
+            box-shadow: 0 0 8px rgba(0, 243, 255, 0.2);
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-pink));
+            width: 0%;
+            box-shadow: 0 0 12px var(--neon-pink);
+            transition: width 0.1s linear;
+        }
+
+        /* Controles de reproducción con estilo de botones recreativos */
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+
+        .btn {
+            background: transparent;
+            border: 2px solid var(--neon-pink);
+            color: #fff;
+            padding: 12px 10px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.65rem;
+            cursor: pointer;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 0, 127, 0.3);
+            transition: all 0.2s ease-in-out;
+            flex: 1;
+        }
+
+        .btn:hover {
+            background: var(--neon-pink);
+            color: #070311;
+            box-shadow: 0 0 20px var(--neon-pink);
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        /* Playlist visual estilizada */
+        .playlist {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .playlist-btn {
+            background: rgba(0, 243, 255, 0.03);
+            border: 1px solid rgba(0, 243, 255, 0.25);
+            color: #bfaaff;
+            padding: 10px 14px;
+            text-align: left;
+            font-family: 'VT323', monospace;
+            font-size: 1.4rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            letter-spacing: 1px;
+        }
+
+        .playlist-btn:hover {
+            border-color: var(--neon-cyan);
+            color: var(--neon-cyan);
+            background: rgba(0, 243, 255, 0.1);
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.15);
+        }
+
+        .playlist-btn.active {
+            background: var(--neon-cyan);
+            color: #070311;
+            font-weight: bold;
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 15px var(--neon-cyan);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sol Retro Wave de fondo -->
+    <div class="retro-sun"></div>
+
+    <!-- Elemento de audio oculto -->
+    <audio id="audioPlayer"></audio>
+
+    <!-- Tarjeta del reproductor -->
+    <div class="player-card">
+        <div class="player-header">⚡ SYNTHWAVE AUDIO ⚡</div>
+
+        <!-- Pantalla LCD -->
+        <div class="screen">
+            <div class="track-title" id="trackTitle">CARGANDO...</div>
+            <div class="artist-name">MARK OC MUSIC</div>
+        </div>
+
+        <!-- Barra de progreso interactiva -->
+        <div class="progress-container" id="progressContainer">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <!-- Botones de control -->
+        <div class="controls">
+            <button class="btn" onclick="cambiarPista(-1)">« ANT</button>
+            <button class="btn" id="playPauseBtn" onclick="playPause()">PLAY</button>
+            <button class="btn" onclick="cambiarPista(1)">SIG »</button>
+        </div>
+
+        <!-- Lista de canciones directas -->
+        <div class="playlist">
+            <button class="playlist-btn active" onclick="seleccionarPista(0)">01. MÚSICA 1</button>
+            <button class="playlist-btn" onclick="seleccionarPista(1)">02. MÚSICA 2</button>
+            <button class="playlist-btn" onclick="seleccionarPista(2)">03. MÚSICA 3</button>
+            <button class="playlist-btn" onclick="seleccionarPista(3)">04. MÚSICA 4</button>
+        </div>
+    </div>
+
+    <script>
+        const audio = document.getElementById('audioPlayer');
+        const trackTitle = document.getElementById('trackTitle');
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const progressBar = document.getElementById('progressBar');
+        const progressContainer = document.getElementById('progressContainer');
+        const playlistBtns = document.querySelectorAll('.playlist-btn');
+
+        // Lista de pistas conectadas a tus archivos
+        const playlist = [
+            { name: "MÚSICA 1", src: "./musica1.mp3" },
+            { name: "MÚSICA 2", src: "./musica2.mp3" },
+            { name: "MÚSICA 3", src: "./musica3.mp3" },
+            { name: "MÚSICA 4", src: "./musica4.mp3" }
+        ];
+
+        let currentIndex = 0;
+        let isPlaying = false;
+
+        function cargarPista(index, iniciarReproduccion = true) {
+            currentIndex = index;
+            audio.src = playlist[currentIndex].src;
+            trackTitle.innerText = playlist[currentIndex].name;
+
+            // Actualizar botones de la playlist
+            playlistBtns.forEach((btn, idx) => {
+                if (idx === currentIndex) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+
+            if (iniciarReproduccion) {
+                audio.play().then(() => {
+                    isPlaying = true;
+                    playPauseBtn.innerText = "PAUSA";
+                }).catch(error => {
+                    console.log("Autoplay bloqueado por el navegador. Haz clic en Play.");
+                    isPlaying = false;
+                    playPauseBtn.innerText = "PLAY";
+                });
+            }
+        }
+
+        function playPause() {
+            if (audio.paused) {
+                audio.play();
+                isPlaying = true;
+                playPauseBtn.innerText = "PAUSA";
+            } else {
+                audio.pause();
+                isPlaying = false;
+                playPauseBtn.innerText = "PLAY";
+            }
+        }
+
+        function cambiarPista(direccion) {
+            currentIndex += direccion;
+            if (currentIndex < 0) currentIndex = playlist.length - 1;
+            if (currentIndex >= playlist.length) currentIndex = 0;
+            cargarPista(currentIndex, true);
+        }
+
+        function seleccionarPista(index) {
+            cargarPista(index, true);
+        }
+
+        // Actualizar barra de progreso en tiempo real
+        audio.addEventListener('timeupdate', () => {
+            if (audio.duration) {
+                const percent = (audio.currentTime / audio.duration) * 100;
+                progressBar.style.width = percent + '%';
+            }
+        });
+
+        // Permitir hacer clic en la barra para adelantar/retrasar
+        progressContainer.addEventListener('click', (e) => {
+            const width = progressContainer.clientWidth;
+            const clickX = e.offsetX;
+            const duration = audio.duration;
+            if (duration) {
+                audio.currentTime = (clickX / width) * duration;
+            }
+        });
+
+        // Pasar automáticamente a la siguiente canción al terminar
+        audio.addEventListener('ended', () => {
+            cambiarPista(1);
+        });
+
+        // Cargar automáticamente la primera pista e intentar reproducción automática al abrir
+        window.addEventListener('DOMContentLoaded', () => {
+            cargarPista(0, true);
+        });
+    </script>
+</body>
+</html>
