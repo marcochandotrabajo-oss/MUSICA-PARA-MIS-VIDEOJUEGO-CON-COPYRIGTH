@@ -6,7 +6,6 @@
     <title>Neon Changing Audio - Mark OC Music</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
-        /* Animación para hacer que los neones cambien de color fluidamente */
         @keyframes neonRainbow {
             0% { --neon-color: #ff0055; --neon-sec: #00ffff; }
             33% { --neon-color: #00ff66; --neon-sec: #ff00ff; }
@@ -41,7 +40,6 @@
             animation: neonRainbow 12s infinite linear;
         }
 
-        /* Tarjeta principal del reproductor de neón dinámico */
         .player-card {
             background: rgba(10, 10, 22, 0.95);
             width: 420px;
@@ -68,7 +66,6 @@
             transition: color 1s ease, text-shadow 1s ease;
         }
 
-        /* Pantalla LCD */
         .screen {
             background: #010104;
             border: 2px solid var(--neon-sec);
@@ -100,7 +97,6 @@
             transition: color 1s ease, text-shadow 1s ease;
         }
 
-        /* Barra de progreso */
         .progress-container {
             width: 100%;
             background: #0d0d1a;
@@ -122,7 +118,6 @@
             transition: width 0.1s linear;
         }
 
-        /* Botones de control */
         .controls {
             display: flex;
             justify-content: space-between;
@@ -157,7 +152,6 @@
             transform: translateY(1px);
         }
 
-        /* Lista de reproducción */
         .playlist {
             display: flex;
             flex-direction: column;
@@ -201,7 +195,7 @@
         <div class="player-header">// DYNAMIC_NEON_AUDIO //</div>
 
         <div class="screen">
-            <div class="track-title" id="trackTitle">CARGANDO...</div>
+            <div class="track-title" id="trackTitle">MÚSICA 1</div>
             <div class="artist-name">MARK OC MUSIC</div>
         </div>
 
@@ -241,7 +235,11 @@
         let currentIndex = 0;
         let isPlaying = false;
 
-        function cargarPista(index, iniciarReproduccion = true) {
+        // Inicializar la primera fuente de audio sin forzar play inmediato para evitar bloqueos del navegador
+        audio.src = playlist[0].src;
+        trackTitle.innerText = playlist[0].name;
+
+        function cargarPista(index) {
             currentIndex = index;
             audio.src = playlist[currentIndex].src;
             trackTitle.innerText = playlist[currentIndex].name;
@@ -254,5 +252,59 @@
                 }
             });
 
-            if (iniciarReproduccion) {
-                audio.play
+            audio.play().then(() => {
+                isPlaying = true;
+                playPauseBtn.innerText = "PAUSA";
+            }).catch(error => {
+                console.log("Reproducción pausada por restricciones del navegador. Pulsa PLAY.");
+                isPlaying = false;
+                playPauseBtn.innerText = "PLAY";
+            });
+        }
+
+        function playPause() {
+            if (audio.paused) {
+                audio.play().then(() => {
+                    isPlaying = true;
+                    playPauseBtn.innerText = "PAUSA";
+                }).catch(e => console.log(e));
+            } else {
+                audio.pause();
+                isPlaying = false;
+                playPauseBtn.innerText = "PLAY";
+            }
+        }
+
+        function cambiarPista(direccion) {
+            currentIndex += direccion;
+            if (currentIndex < 0) currentIndex = playlist.length - 1;
+            if (currentIndex >= playlist.length) currentIndex = 0;
+            cargarPista(currentIndex);
+        }
+
+        function seleccionarPista(index) {
+            cargarPista(index);
+        }
+
+        audio.addEventListener('timeupdate', () => {
+            if (audio.duration) {
+                const percent = (audio.currentTime / audio.duration) * 100;
+                progressBar.style.width = percent + '%';
+            }
+        });
+
+        progressContainer.addEventListener('click', (e) => {
+            const width = progressContainer.clientWidth;
+            const clickX = e.offsetX;
+            const duration = audio.duration;
+            if (duration) {
+                audio.currentTime = (clickX / width) * duration;
+            }
+        });
+
+        audio.addEventListener('ended', () => {
+            cambiarPista(1);
+        });
+    </script>
+</body>
+</html>
