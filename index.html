@@ -3,15 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neon Cyber Audio - Mark OC Music</title>
-    <!-- Fuentes futuristas y digitales -->
+    <title>Neon Changing Audio - Mark OC Music</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
+        /* Animación para hacer que los neones cambien de color fluidamente */
+        @keyframes neonRainbow {
+            0% { --neon-color: #ff0055; --neon-sec: #00ffff; }
+            33% { --neon-color: #00ff66; --neon-sec: #ff00ff; }
+            66% { --neon-color: #00f3ff; --neon-sec: #ffff00; }
+            100% { --neon-color: #ff0055; --neon-sec: #00ffff; }
+        }
+
         :root {
-            --neon-pink: #ff0055;
-            --neon-cyan: #00ffff;
-            --neon-yellow: #f3e600;
-            --bg-deep: #030308;
+            --neon-color: #ff0055;
+            --neon-sec: #00ffff;
         }
 
         * {
@@ -21,89 +26,58 @@
         }
 
         body {
-            background-color: var(--bg-deep);
-            /* Fondo con patrón de ciber-rejilla oscura */
+            background-color: #030308;
             background-image: 
-                linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 0, 85, 0.03) 1px, transparent 1px);
-            background-size: 30px 30px;
+                linear-gradient(rgba(0, 255, 255, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 0, 85, 0.04) 1px, transparent 1px);
+            background-size: 35px 35px;
+            width: 100vw;
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             font-family: 'Share Tech Mono', monospace;
             overflow: hidden;
-            position: relative;
+            animation: neonRainbow 12s infinite linear;
         }
 
-        /* Destello ambiental de neón de fondo */
-        .ambient-glow {
-            position: absolute;
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(255,0,85,0.15) 0%, rgba(0,243,255,0.05) 60%, transparent 100%);
-            z-index: 1;
-            filter: blur(50px);
-            animation: pulse-glow 4s infinite alternate;
-        }
-
-        @keyframes pulse-glow {
-            0% { transform: scale(0.9); opacity: 0.7; }
-            100% { transform: scale(1.1); opacity: 1; }
-        }
-
-        /* Tarjeta principal del reproductor de neón */
+        /* Tarjeta principal del reproductor de neón dinámico */
         .player-card {
-            background: rgba(8, 8, 18, 0.92);
+            background: rgba(10, 10, 22, 0.95);
             width: 420px;
             padding: 35px;
             border-radius: 20px;
-            border: 2px solid var(--neon-cyan);
-            box-shadow: 0 0 25px rgba(0, 255, 255, 0.4), 
-                        inset 0 0 20px rgba(255, 0, 85, 0.2);
+            border: 3px solid var(--neon-color);
+            box-shadow: 0 0 30px var(--neon-color), 
+                        inset 0 0 20px var(--neon-sec);
             text-align: center;
-            z-index: 10;
+            z-index: 999;
             position: relative;
-            backdrop-filter: blur(10px);
+            transition: border-color 1s ease, box-shadow 1s ease;
         }
 
         .player-header {
             font-family: 'Orbitron', sans-serif;
             font-size: 1.1rem;
             font-weight: 700;
-            color: var(--neon-cyan);
+            color: var(--neon-color);
             letter-spacing: 4px;
             margin-bottom: 24px;
-            text-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan);
+            text-shadow: 0 0 10px var(--neon-color);
             text-transform: uppercase;
+            transition: color 1s ease, text-shadow 1s ease;
         }
 
-        /* Pantalla LCD de neón estilo cyberpunk */
+        /* Pantalla LCD */
         .screen {
             background: #010104;
-            border: 2px solid var(--neon-pink);
+            border: 2px solid var(--neon-sec);
             border-radius: 12px;
             padding: 20px;
             margin-bottom: 25px;
-            box-shadow: inset 0 0 15px rgba(255, 0, 85, 0.6), 
-                        0 0 10px rgba(255, 0, 85, 0.4);
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* Efecto de línea brillante pasando por la pantalla */
-        .screen::after {
-            content: "";
-            position: absolute;
-            top: 0; left: -100%;
-            width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
-            animation: scanline 3s infinite;
-        }
-
-        @keyframes scanline {
-            0% { left: -100%; }
-            100% { left: 100%; }
+            box-shadow: inset 0 0 15px var(--neon-sec), 
+                        0 0 10px var(--neon-sec);
+            transition: border-color 1s ease, box-shadow 1s ease;
         }
 
         .track-title {
@@ -111,20 +85,22 @@
             font-size: 1.8rem;
             font-weight: 900;
             color: #fff;
-            text-shadow: 0 0 10px var(--neon-pink), 0 0 20px var(--neon-pink), 0 0 30px var(--neon-pink);
+            text-shadow: 0 0 10px var(--neon-color), 0 0 20px var(--neon-color);
             margin-bottom: 8px;
             letter-spacing: 1px;
+            transition: text-shadow 1s ease;
         }
 
         .artist-name {
             font-size: 1.3rem;
-            color: var(--neon-yellow);
-            text-shadow: 0 0 8px var(--neon-yellow);
+            color: var(--neon-sec);
+            text-shadow: 0 0 8px var(--neon-sec);
             letter-spacing: 2px;
             text-transform: uppercase;
+            transition: color 1s ease, text-shadow 1s ease;
         }
 
-        /* Barra de progreso de neón */
+        /* Barra de progreso */
         .progress-container {
             width: 100%;
             background: #0d0d1a;
@@ -134,19 +110,19 @@
             cursor: pointer;
             position: relative;
             overflow: hidden;
-            border: 1px solid rgba(0, 255, 255, 0.4);
-            box-shadow: 0 0 8px rgba(0, 255, 255, 0.2);
+            border: 1px solid var(--neon-sec);
+            transition: border-color 1s ease;
         }
 
         .progress-bar {
             height: 100%;
-            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-pink));
+            background: linear-gradient(90deg, var(--neon-sec), var(--neon-color));
             width: 0%;
-            box-shadow: 0 0 12px var(--neon-pink), 0 0 20px var(--neon-cyan);
+            box-shadow: 0 0 12px var(--neon-color);
             transition: width 0.1s linear;
         }
 
-        /* Botones de control futuristas */
+        /* Botones de control */
         .controls {
             display: flex;
             justify-content: space-between;
@@ -156,19 +132,127 @@
 
         .btn {
             background: transparent;
-            border: 2px solid var(--neon-cyan);
-            color: var(--neon-cyan);
+            border: 2px solid var(--neon-color);
+            color: var(--neon-color);
             padding: 12px 10px;
             font-family: 'Orbitron', sans-serif;
             font-size: 0.75rem;
             font-weight: 700;
             cursor: pointer;
             border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 255, 255, 0.25);
-            transition: all 0.2s ease-in-out;
+            box-shadow: 0 0 10px var(--neon-color);
+            transition: all 0.3s ease-in-out;
             flex: 1;
-            text-shadow: 0 0 5px var(--neon-cyan);
+            text-shadow: 0 0 5px var(--neon-color);
         }
 
         .btn:hover {
-            background: var(--neon-cyan);
+            background: var(--neon-color);
+            color: #030308;
+            box-shadow: 0 0 25px var(--neon-color);
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        /* Lista de reproducción */
+        .playlist {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .playlist-btn {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #a0a0c0;
+            padding: 10px 14px;
+            text-align: left;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1.3rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            letter-spacing: 1px;
+        }
+
+        .playlist-btn:hover {
+            border-color: var(--neon-color);
+            color: #fff;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .playlist-btn.active {
+            background: linear-gradient(90deg, var(--neon-color), var(--neon-sec));
+            color: #030308;
+            font-weight: bold;
+            border-color: #fff;
+            box-shadow: 0 0 15px var(--neon-color);
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="audioPlayer"></audio>
+
+    <div class="player-card">
+        <div class="player-header">// DYNAMIC_NEON_AUDIO //</div>
+
+        <div class="screen">
+            <div class="track-title" id="trackTitle">CARGANDO...</div>
+            <div class="artist-name">MARK OC MUSIC</div>
+        </div>
+
+        <div class="progress-container" id="progressContainer">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <div class="controls">
+            <button class="btn" onclick="cambiarPista(-1)">&lt;&lt; ANT</button>
+            <button class="btn" id="playPauseBtn" onclick="playPause()">PLAY</button>
+            <button class="btn" onclick="cambiarPista(1)">SIG &gt;&gt;</button>
+        </div>
+
+        <div class="playlist">
+            <button class="playlist-btn active" onclick="seleccionarPista(0)">01. MÚSICA 1</button>
+            <button class="playlist-btn" onclick="seleccionarPista(1)">02. MÚSICA 2</button>
+            <button class="playlist-btn" onclick="seleccionarPista(2)">03. MÚSICA 3</button>
+            <button class="playlist-btn" onclick="seleccionarPista(3)">04. MÚSICA 4</button>
+        </div>
+    </div>
+
+    <script>
+        const audio = document.getElementById('audioPlayer');
+        const trackTitle = document.getElementById('trackTitle');
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const progressBar = document.getElementById('progressBar');
+        const progressContainer = document.getElementById('progressContainer');
+        const playlistBtns = document.querySelectorAll('.playlist-btn');
+
+        const playlist = [
+            { name: "MÚSICA 1", src: "./musica1.mp3" },
+            { name: "MÚSICA 2", src: "./musica2.mp3" },
+            { name: "MÚSICA 3", src: "./musica3.mp3" },
+            { name: "MÚSICA 4", src: "./musica4.mp3" }
+        ];
+
+        let currentIndex = 0;
+        let isPlaying = false;
+
+        function cargarPista(index, iniciarReproduccion = true) {
+            currentIndex = index;
+            audio.src = playlist[currentIndex].src;
+            trackTitle.innerText = playlist[currentIndex].name;
+
+            playlistBtns.forEach((btn, idx) => {
+                if (idx === currentIndex) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+
+            if (iniciarReproduccion) {
+                audio.play
